@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
-<form name="f" method="post" th:action="@{/login_process}">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+<th:block th:replace="~{header :: header}"/>
 
-    <label for="username">Введите имя пользователя</label>
-    <input type="text" name="username" id="username"/>
-    <br/>
-    <label for="password">Введите пароль</label>
-    <input type="password" name="password" id="password"/>
-    <input type="submit" value="Login">
+<div class="container">
+    <div class="registration-form mt-5">
+        <form name="f" method="post" th:action="@{/login_process}" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-    <div th:if="${param.error}" style="color: red">
-        Неверные данные
+            <div class="mb-3">
+            <label class="form-label" for="login" >Login</label>
+            <input class="form-control" type="text" name="username" id="login" placeholder="Enter your login"/>
+            </div>
+            <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password"/>
+
+            </div>
+            <button class="btn btn-primary mb-3" type="submit" >Login</button>
+            <div th:if="${param.error}" style="color: red">
+                Неверные данные
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

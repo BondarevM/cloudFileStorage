@@ -3,27 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/registration}" th:object="${customerDto}" >
+<th:block th:replace="header :: header"/>
 
-    <label for="login">Введите имя:</label>
-    <input type="text" id="login" th:field="*{login}">
-    <div style="color:red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Username Error</div>
-    <br/>
+<div class="container">
+    <div class="registration-form mt-5">
+        <form th:method="POST" th:action="@{/registration}" th:object="${customerDto}">
+            <div class="mb-3">
+                <label for="login" class="form-label">Login</label>
+                <input class="form-control" type="text" id="login" th:field="*{login}" placeholder="Enter your login">
+                <div style="color:red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Username Error</div>
+            </div>
 
-    <label for="yearOfBirth">Введите пароль:</label>
-    <input type="text" id="yearOfBirth" th:field="*{password}">
-    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
-    <br/>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input class="form-control" type="password" id="password" th:field="*{password}" placeholder="Enter your password">
+                <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error
+                </div>
+            </div>
 
-<!--    <label for="password">Введите пароль</label>-->
-<!--    <input type="password" id="password" th:field="*{password}">-->
-<!--    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>-->
-<!--    <br/>-->
-    <input type="submit" value="Sign up!"/>
-</form>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm password</label>
+                <input class="form-control" type="password" id="confirmPassword" th:field="*{confirmedPassword}" placeholder="Repeat your password">
+                <div style="color:red" th:if="${#fields.hasErrors('confirmedPassword')}" th:errors="*{password}">
+                    Password Error
+                </div>
+            </div>
 
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
