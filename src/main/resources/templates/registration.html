@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<th:block th:replace="header :: header"/>
+<th:block th:replace="~{header :: header}"/>
+
 
 <div class="container">
     <div class="registration-form mt-5">
@@ -22,19 +23,15 @@
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input class="form-control" type="password" id="password" th:field="*{password}" placeholder="Enter your password">
-                <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error
-                </div>
             </div>
 
             <div class="mb-3">
                 <label for="confirmPassword" class="form-label">Confirm password</label>
                 <input class="form-control" type="password" id="confirmPassword" th:field="*{confirmedPassword}" placeholder="Repeat your password">
-                <div style="color:red" th:if="${#fields.hasErrors('confirmedPassword')}" th:errors="*{password}">
-                    Password Error
-                </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
+            <p class="d-flex flex-column align-items-center text-danger fs-5" th:if="${#fields.hasErrors()}" th:text="${#fields.errors().get(0)}"></p>
         </form>
     </div>
 </div>
