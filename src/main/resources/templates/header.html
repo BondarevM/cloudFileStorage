@@ -3,34 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
 
 <header class="navbar bg-primary" data-bs-theme="dark">
-
-    <div class="justify-content-evenly">
-        <a class="link-underline link-underline-opacity-0 " href="/">
-            <img class="logo" th:src="@{/images/logo.svg}" alt="logo">
-            <span class="navbar-brand h1 h-100 d-inline-block ">Cloud storage</span>
-        </a>
-    </div>
-    <div th:if="${isAuthenticated}">
-        <div class="justify-content-end">
-        <form th:action="@{/logout}" method="post">
-            <input class="btn btn-secondary m-2" type="submit" value="Logout">
-        </form>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between w-100">
+            <div class="d-flex align-items-center">
+                <a class="link-underline link-underline-opacity-0 d-flex align-items-center" href="/">
+                    <img class="logo me-2" th:src="@{/images/logo.svg}" alt="logo">
+                    <span class="navbar-brand h1 mb-0">Cloud storage</span>
+                </a>
+            </div>
+            <div th:if="${isAuthenticated}" class="d-flex align-items-center">
+                <img class="me-2 mt-2" th:src="@{/images/person_icon.svg}" alt="person icon">
+                <span class="text-light fs-5 me-3" th:text="${username}"></span>
+                <form th:action="@{/logout}" method="post" class="mb-0">
+                    <input class="btn btn-secondary" type="submit" value="Logout">
+                </form>
+            </div>
+            <div th:if="${!isAuthenticated}" class="d-flex align-items-center">
+                <a class="btn btn-light me-2" href="/login">Sign in</a>
+                <a class="btn btn-secondary" href="/registration">Sign up</a>
+            </div>
         </div>
     </div>
-
-    <div th:if="${!isAuthenticated}">
-        <div class="justify-content-end">
-            <a type="button" class="btn btn-light" href="/login">Sign in</a>
-            <a type="button" class="btn btn-secondary m-2" href="/registration">Sign up</a>
-        </div>
-    </div>
-
-
 </header>
 
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>

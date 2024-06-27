@@ -36,24 +36,13 @@ public class AuthController extends AbstractController {
     public String performRegistration(@ModelAttribute("customerDto") @Valid CustomerDto customerDto,
                                       BindingResult bindingResult) {
 
-        validateCustomer(customerDto, bindingResult);
+        registrationService.register(customerDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "/registration";
         }
 
-        registrationService.register(customerDto);
         return "redirect:/login";
     }
 
-    private void validateCustomer(CustomerDto customerDto,
-                                  BindingResult bindingResult) {
-        if (!customerDto.getPassword().equals(customerDto.getConfirmedPassword())) {
-            bindingResult.rejectValue("confirmedPassword", "400", "Password mismatch");
-        }
-
-        if (customerRepository.findByLogin(customerDto.getLogin()).isPresent()){
-            bindingResult.rejectValue("login", "400", "User with this login already exist");
-        }
-    }
 }
