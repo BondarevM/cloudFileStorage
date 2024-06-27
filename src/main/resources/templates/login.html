@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Cloud storage</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
@@ -25,12 +25,23 @@
                        placeholder="Enter your password"/>
 
             </div>
-<!--            <div class="flex-content">-->
-                <button class="btn btn-primary mb-3" type="submit">Login</button>
-                <p class="d-flex flex-column align-items-center text-danger fs-5" th:if="${param.error}" >
-                Incorrect login or password
-            </p>
-<!--            </div>-->
+            <!--            <div class="flex-content">-->
+            <div class="row">
+                <div class="col">
+                    <button class="d-flex btn btn-primary" type="submit">Submit</button>
+                </div>
+                <div class="col mt-2">
+                    <p class="position-absolute translate-middle text-danger fs-5" th:if="${param.error}">
+                        Incorrect login or password
+                    </p>
+                </div>
+
+            </div>
+            <h5 class="text-center">Don't have an account? <a
+                    class="link-offset-2 link-underline link-underline-opacity-0" href="/login">Sign up</a></h5>
+
+
+            <!--            </div>-->
 
         </form>
     </div>

@@ -25,22 +25,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/registration").permitAll()
-                        .requestMatchers("/css/**", "/images/**","/webjars/bootstrap/5.3.3/css/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/registration","/css/**", "/images/**","/webjars/bootstrap/5.3.3/css/**").permitAll()
+//                        .requestMatchers("/css/**", "/images/**","/webjars/bootstrap/5.3.3/css/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login_process")
-                        .defaultSuccessUrl("/hello", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                         .deleteCookies("SESSION")
-                )
-                .httpBasic(Customizer.withDefaults());
+                );
+//                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
