@@ -25,28 +25,20 @@
                        placeholder="Enter your password"/>
 
             </div>
-            <!--            <div class="flex-content">-->
-            <div class="row">
-                <div class="col">
-                    <button class="d-flex btn btn-primary" type="submit">Submit</button>
-                </div>
-                <div class="col mt-2">
-                    <p class="position-absolute translate-middle text-danger fs-5" th:if="${param.error}">
-                        Incorrect login or password
-                    </p>
-                </div>
 
-            </div>
+            <button class="d-flex btn btn-primary" type="submit">Submit</button>
+
             <h5 class="text-center">Don't have an account? <a
                     class="link-offset-2 link-underline link-underline-opacity-0" href="/registration">Sign up</a></h5>
 
-
-            <!--            </div>-->
+            <div th:if="${param.error}" class="alert alert-danger">
+                <span>Incorrect login or password</span>
+            </div>
 
         </form>
     </div>
 </div>
 
-<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!--<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>-->
 </body>
 </html>
