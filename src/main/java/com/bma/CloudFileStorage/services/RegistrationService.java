@@ -31,10 +31,7 @@ public class RegistrationService {
 
     @Transactional
     public void register(CustomerDto customerDto) {
-//        validateCustomer(customerDto);
 
-//        if (bindingResult.hasErrors())
-//            return;
 
         Customer customer = modelMapper.map(customerDto, Customer.class);
 
@@ -48,12 +45,10 @@ public class RegistrationService {
 
     public void validateCustomer(CustomerDto customerDto) {
         if (!customerDto.getPassword().equals(customerDto.getConfirmedPassword())) {
-//            bindingResult.rejectValue("confirmedPassword", "400", "Password mismatch");
             throw  new PasswordMismatchException("Password mismatch");
         }
 
         if (customerRepository.findByLogin(customerDto.getLogin()).isPresent()) {
-//            bindingResult.rejectValue("login", "400", "User with this login already exist");
             throw new UserAlreadyExistsException("User with this login already exists");
         }
     }
