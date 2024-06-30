@@ -23,12 +23,12 @@
         </div>
 
         <div>
-            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
+            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">
 
 
                 <label for="folder">Choose a folder:</label>
 
-                <input type="file" id="folder" name="file" webkitdirectory="true" multiple/>
+                <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
                 <button type="submit">Upload</button>
             </form>
         </div>

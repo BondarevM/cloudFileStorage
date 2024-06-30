@@ -41,6 +41,5 @@ public class MinioService {
     }
 
     public void uploadFolder(MultipartFile multipartFile) {
-
     }
 }
