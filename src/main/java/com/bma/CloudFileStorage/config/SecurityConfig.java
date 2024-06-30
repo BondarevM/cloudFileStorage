@@ -40,7 +40,6 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                         .deleteCookies("SESSION")
                 );
-//                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

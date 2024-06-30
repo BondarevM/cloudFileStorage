@@ -1,5 +1,6 @@
 package com.bma.CloudFileStorage.services;
 
+import com.bma.CloudFileStorage.exceptions.UserAlreadyExistsException;
 import com.bma.CloudFileStorage.models.Customer;
 import com.bma.CloudFileStorage.models.dto.CustomerDto;
 import com.bma.CloudFileStorage.repositories.CustomerRepository;
@@ -26,20 +27,9 @@ class RegistrationServiceTest {
     @Autowired
     private CustomerRepository customerRepository;
 
-//    @Container
-//    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.3");
-//
-//    @DynamicPropertySource
-//    static void configureProperties(DynamicPropertyRegistry registry){
-//        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-//        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-//        registry.add("spring.jpa.generate-ddl", () -> true);
-//    }
-
     @Test
     public void callingRegistrationMethodCreatesUserInDatabase(){
-        String login = "login228";
+        String login = "login";
         String password = "password";
 
 
@@ -53,8 +43,28 @@ class RegistrationServiceTest {
 
         Optional<Customer> customer = customerRepository.findByLogin(login);
         Assertions.assertTrue(customer.isPresent());
+    }
 
+    @Test
+    public void savingUserWithNonUniqueLoginThrowsException(){
+        String login = "login2";
+        String password = "password";
 
+        CustomerDto customerDto = new CustomerDto();
+        customerDto.setLogin(login);
+        customerDto.setPassword(password);
+        customerDto.setConfirmedPassword(password);
+
+        registrationService.validateCustomer(customerDto);
+        registrationService.register(customerDto);
+
+        String login2 = "login2";
+        String password2 = "password2";
+        CustomerDto customerDto2 = new CustomerDto();
+        customerDto2.setLogin(login2);
+        customerDto2.setPassword(password2);
+        customerDto2.setConfirmedPassword(password2);
+        Assertions.assertThrows(UserAlreadyExistsException.class,() -> registrationService.validateCustomer(customerDto2));
     }
 
 
