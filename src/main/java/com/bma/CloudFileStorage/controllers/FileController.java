@@ -32,4 +32,19 @@ public class FileController {
 
         return "redirect:/";
     }
+
+    @PostMapping("/uploadFolder")
+    public String uploadFolder(@RequestParam("folder") MultipartFile[] multipartFile){
+
+
+
+
+//        minioService.uploadFolder(multipartFile);
+        return "redirect:/";
+    }
+
+
+
+
+
 }

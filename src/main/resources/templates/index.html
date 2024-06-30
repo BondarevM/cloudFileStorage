@@ -11,6 +11,7 @@
 
     <div th:if="${isAuthenticated}">
         Аутентифицирован
+        <div>
         <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
 
 
@@ -19,6 +20,18 @@
         <input type="file" id="file" name="file" />
             <button type="submit">Upload</button>
         </form>
+        </div>
+
+        <div>
+            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
+
+
+                <label for="folder">Choose a folder:</label>
+
+                <input type="file" id="folder" name="file" webkitdirectory="true" multiple/>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
     </div>
 
 
