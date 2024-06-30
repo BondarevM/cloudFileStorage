@@ -25,7 +25,7 @@ public class FileController {
     public String uploadFile(@RequestParam("file") MultipartFile file) {
 
         try {
-            minioService.uploadFile(file.getOriginalFilename(), file.getContentType(), file.getInputStream());
+            minioService.uploadFile(file);
         } catch (Exception e ){
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
@@ -35,22 +35,13 @@ public class FileController {
 
     @PostMapping("/uploadFolder")
     public String uploadFolder(@RequestParam("folder") MultipartFile[] folder){
-       int i =1;
-       int qi =1;
-
         List<MultipartFile> list = Arrays.stream(folder).toList();
-        System.out.println();
-
-        for (MultipartFile multipartFile : list){
-            try {
-                minioService.uploadFile(multipartFile.getOriginalFilename(),multipartFile.getContentType(),multipartFile.getInputStream());
-            } catch (MinioException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            minioService.uploadFolder(list);
+        } catch (MinioException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new RuntimeException("Error occurred: " + e.getMessage());
         }
 
-
-//        minioService.uploadFolder(multipartFile);
         return "redirect:/";
     }
 

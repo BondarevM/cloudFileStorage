@@ -6,6 +6,7 @@ import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 public class MinioService {
@@ -26,20 +28,24 @@ public class MinioService {
         this.minioClient = minioClient;
     }
 
-    public void uploadFile(String fileName, String contentType, InputStream inputStream) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void uploadFile(MultipartFile file) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/"+ file.getOriginalFilename();
 
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucketName)
-                        .object(fileName)
-                        .stream(inputStream, inputStream.available(), -1)
-                        .contentType(contentType)
+                        .object(pathForCurrentUser)
+                        .stream(file.getInputStream(), file.getInputStream().available(), -1)
+                        .contentType(file.getContentType())
                         .build()
         );
 
 
     }
 
-    public void uploadFolder(MultipartFile multipartFile) {
+    public void uploadFolder(List<MultipartFile> folder) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        for (MultipartFile file : folder){
+            uploadFile(file);;
+        }
     }
 }
