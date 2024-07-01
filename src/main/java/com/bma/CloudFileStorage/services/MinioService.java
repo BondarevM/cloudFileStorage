@@ -29,6 +29,10 @@ public class MinioService {
     }
 
     public void uploadFile(MultipartFile file) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        if (file.getOriginalFilename().isEmpty()){
+            return;
+        }
+
         String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/"+ file.getOriginalFilename();
 
         minioClient.putObject(

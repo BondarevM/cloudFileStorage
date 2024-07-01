@@ -12,32 +12,97 @@
     <div th:if="${isAuthenticated}">
         Аутентифицирован
         <div>
-        <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
+<!--        <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">-->
 
 
-        <label for="file">Choose a file:</label>
+<!--        <label for="file">Choose a file:</label>-->
 
-        <input type="file" id="file" name="file" />
-            <button type="submit">Upload</button>
-        </form>
+<!--        <input type="file" id="file" name="file" />-->
+<!--            <button type="submit">Upload</button>-->
+<!--        </form>-->
         </div>
 
         <div>
-            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">
+<!--            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">-->
 
 
-                <label for="folder">Choose a folder:</label>
+<!--                <label for="folder">Choose a folder:</label>-->
 
-                <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
-                <button type="submit">Upload</button>
-            </form>
+<!--                <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>-->
+<!--                <button type="submit">Upload</button>-->
+<!--            </form>-->
         </div>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFile">
+            New file
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="uploadFile" tabindex="-1" aria-labelledby="uploadFileLabel" aria-hidden="true">
+            <div class="modal-dialog d-flex">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="uploadFileLabel">Download file</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                        <form class="m-2" th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
+
+
+                            <label for="file">Choose a file:</label>
+
+                            <input  type="file" id="file" name="file" />
+                            <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-primary align-items-end" type="submit">Upload</button>
+                            </div>
+                        </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFolder">
+            New folder
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="uploadFolder" tabindex="-1" aria-labelledby="uploadFolderLabel" aria-hidden="true">
+            <div class="modal-dialog d-flex">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="uploadFolderLabel">Download folder</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form class="m-2" th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">
+
+
+                        <label for="folder">Choose a folder:</label>
+
+                        <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-primary align-items-end" type="submit">Upload</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
+
 
 
 <div th:if="${!isAuthenticated}">
     Не Аутентифицирован
 </div>
+
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 </html>
