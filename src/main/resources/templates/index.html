@@ -9,93 +9,100 @@
 <body>
 <th:block th:replace="~{header :: header}"/>
 
-    <div th:if="${isAuthenticated}">
-        Аутентифицирован
-        <div>
-<!--        <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">-->
+<div th:if="${isAuthenticated}">
 
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFile">
+        New file
+    </button>
 
-<!--        <label for="file">Choose a file:</label>-->
-
-<!--        <input type="file" id="file" name="file" />-->
-<!--            <button type="submit">Upload</button>-->
-<!--        </form>-->
-        </div>
-
-        <div>
-<!--            <form th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">-->
-
-
-<!--                <label for="folder">Choose a folder:</label>-->
-
-<!--                <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>-->
-<!--                <button type="submit">Upload</button>-->
-<!--            </form>-->
-        </div>
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFile">
-            New file
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="uploadFile" tabindex="-1" aria-labelledby="uploadFileLabel" aria-hidden="true">
-            <div class="modal-dialog d-flex">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="uploadFileLabel">Download file</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                        <form class="m-2" th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFile}">
-
-
-                            <label for="file">Choose a file:</label>
-
-                            <input  type="file" id="file" name="file" />
-                            <div class="d-flex justify-content-end mt-3">
-                            <button class="btn btn-primary align-items-end" type="submit">Upload</button>
-                            </div>
-                        </form>
-
+    <!-- Modal -->
+    <div class="modal fade" id="uploadFile" tabindex="-1" aria-labelledby="uploadFileLabel" aria-hidden="true">
+        <div class="modal-dialog d-flex">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="uploadFileLabel">Download file</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
+                <form class="m-2" th:method="POST" enctype="multipart/form-data" th:action="@{/file/upload}">
+
+
+                    <label for="file">Choose a file:</label>
+
+                    <input type="file" id="file" name="file"/>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary align-items-end" type="submit">Upload</button>
+                    </div>
+                </form>
+
             </div>
         </div>
-
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFolder">
-            New folder
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="uploadFolder" tabindex="-1" aria-labelledby="uploadFolderLabel" aria-hidden="true">
-            <div class="modal-dialog d-flex">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="uploadFolderLabel">Download folder</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <form class="m-2" th:method="POST"  enctype="multipart/form-data" th:action="@{/uploadFolder}">
-
-
-                        <label for="folder">Choose a folder:</label>
-
-                        <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
-                        <div class="d-flex justify-content-end mt-3">
-                            <button class="btn btn-primary align-items-end" type="submit">Upload</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-
-
-
     </div>
 
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#uploadFolder">
+        New folder
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="uploadFolder" tabindex="-1" aria-labelledby="uploadFolderLabel" aria-hidden="true">
+        <div class="modal-dialog d-flex">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="uploadFolderLabel">Download folder</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form class="m-2" th:method="POST" enctype="multipart/form-data" th:action="@{/folder/upload}">
+
+
+                    <label for="folder">Choose a folder:</label>
+
+                    <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary align-items-end" type="submit">Upload</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="ms-5 me-5 mt-2 mb-5">
+        <div class="container-fluid bg-body-secondary rounded p-2 text-center">
+
+            <!-- Files Section -->
+            <div>
+                <h2>Objects</h2>
+                <div class="row">
+                    <div class="col-md-2" th:each="object : ${objects}">
+
+                        <div th:if="${object.isFile}">
+                            <a class="link-underline link-underline-opacity-0" th:href="@{/}">
+                                <img th:src="@{/images/file.png}" alt="fileIcon"/>
+                                <div class="m-2 link-underline link-underline-opacity-0" th:text="${object.getName()}"/>
+                            </a>
+                        </div>
+
+
+                        <div th:if="${!object.isFile}">
+                            <a class="link-underline link-underline-opacity-0" th:href="@{|/?path=${object.getPath()}|}">
+                                <img th:src="@{/images/folder.png}" alt="folderIcon"/>
+                                <div class="m-2 " th:text="${object.getName()}"/>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
 <div th:if="${!isAuthenticated}">

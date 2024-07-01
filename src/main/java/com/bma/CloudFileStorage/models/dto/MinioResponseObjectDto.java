@@ -1,2 +1,19 @@
-package com.bma.CloudFileStorage.models.dto;public class MinioResponseObjectDto {
+package com.bma.CloudFileStorage.models.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class MinioResponseObjectDto {
+
+    private String owner;
+    private String path;
+    private String name;
+    private Boolean isFile;
+
 }
