@@ -28,17 +28,31 @@
                     <div class="col-md-2" th:each="object : ${objects}">
 
                         <div th:if="${object.isFile}">
-                            <a class="link-underline link-underline-opacity-0" th:href="@{/}">
-                                <img th:src="@{/images/file.png}" alt="fileIcon"/>
-                                <div class="m-2 link-underline link-underline-opacity-0" th:text="${object.getName()}"/>
-                            </a>
+                            <img th:src="@{/images/file.png}" alt="fileIcon"/>
+
+                                <img th:src="@{/images/dropdown-button.png}" class="dropdown-toggle dropdown-button position-absolute" type="button" data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Rename</a></li>
+                                    <li><a class="dropdown-item" href="#">Download</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+
+                            <div class="m-2 link-underline link-underline-opacity-0" th:text="${object.getName()}"/>
                         </div>
 
                         <div th:if="${!object.isFile}">
-                            <a class="link-underline link-underline-opacity-0" th:href="@{|/?path=${object.getPath()}|}">
+                            <a class="link-underline link-underline-opacity-0"
+                               th:href="@{|/?path=${object.getPath()}|}">
                                 <img th:src="@{/images/folder.png}" alt="folderIcon"/>
-                                <div class="m-2 " th:text="${object.getName()}"/>
                             </a>
+                            <img th:src="@{/images/dropdown-button.png}" class="dropdown-toggle dropdown-button position-absolute" type="button" data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Rename</a></li>
+                                <li><a class="dropdown-item" href="#">Download</a></li>
+                                <li><a class="dropdown-item" href="#">Delete</a></li>
+                            </ul>
+                            <div class="m-2 " th:text="${object.getName()}"/>
+
                         </div>
 
                     </div>
@@ -51,9 +65,6 @@
     </div>
 </div>
 
-<div th:if="${!isAuthenticated}">
-    Не Аутентифицирован
-</div>
 
 <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
 
