@@ -1,28 +1,26 @@
 package com.bma.CloudFileStorage.services;
 
 import com.bma.CloudFileStorage.exceptions.FileStorageException;
+import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
-import io.minio.ListObjectsArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.Result;
+import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MinioService {
@@ -61,7 +59,7 @@ public class MinioService {
     }
 
 
-    public List<MinioResponseObjectDto> getFiles(String username, String path)  {
+    public List<MinioResponseObjectDto> getFiles(String username, String path) {
         List<MinioResponseObjectDto> objects = new ArrayList<>();
 
         Iterable<Result<Item>> results = minioClient.listObjects(
@@ -76,8 +74,15 @@ public class MinioService {
                 if (result.get().objectName().contains(".")) {
                     String fullPath = result.get().objectName();
                     int lastSlashIndex = fullPath.lastIndexOf("/");
+                    int firstSlashIndex = fullPath.indexOf("/");
 
-                    MinioResponseObjectDto minioResponseFileDto = new MinioResponseObjectDto(username, fullPath,
+                    String resultPath = fullPath.substring(firstSlashIndex + 1);
+                    if (fullPath.endsWith("/")) {
+                        fullPath = fullPath.substring(0, fullPath.length() - 1);
+                    }
+
+
+                    MinioResponseObjectDto minioResponseFileDto = new MinioResponseObjectDto(username, resultPath,
                             fullPath.substring(lastSlashIndex + 1), true);
 
 
@@ -92,6 +97,7 @@ public class MinioService {
                     if (fullPath.endsWith("/")) {
                         fullPath = fullPath.substring(0, fullPath.length() - 1);
                     }
+
                     int lastSlashIndex = fullPath.lastIndexOf("/");
 
                     MinioResponseObjectDto minioResponseFolderDto = new MinioResponseObjectDto(username, resultPath, fullPath.substring(lastSlashIndex + 1), false);
@@ -105,6 +111,30 @@ public class MinioService {
         }
 
         return objects;
-
     }
+
+
+//    public InputStreamResource downloadFile(DownloadFileRequestDto downloadFileRequestDto) {
+//
+//        try(
+//                InputStream stream = minioClient.getObject(
+//                        GetObjectArgs.builder()
+//                                .bucket(bucketName)
+//                                .object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath())
+//                                .build()
+//                )
+//                ){
+//            return new InputStreamResource(stream);
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error occurred: " + e.getMessage());
+//        }
+//    }
+
+    public Mono<InputStreamResource> download(DownloadFileRequestDto downloadFileRequestDto) {
+        return Mono.fromCallable(() -> {
+            InputStream response = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath()).build());
+            return new InputStreamResource(response);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
 }

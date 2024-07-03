@@ -27,33 +27,33 @@
                 <div class="row">
                     <div class="col-md-2" th:each="object : ${objects}">
 
-                        <div th:if="${object.isFile}">
-                            <img th:src="@{/images/file.png}" alt="fileIcon"/>
+                        <a th:if="${!object.isFile}"
+                           th:href="@{|/?path=${object.getPath()}|}">
+                            <img th:src="@{/images/folder.png}" alt="folderIcon"/>
+                        </a>
+                        <img th:if="${object.isFile}" th:src="@{/images/file.png}" alt="fileIcon"/>
 
-                                <img th:src="@{/images/dropdown-button.png}" class="dropdown-toggle dropdown-button position-absolute" type="button" data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Rename</a></li>
-                                    <li><a class="dropdown-item" href="#">Download</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
+                        <img th:src="@{/images/dropdown-button.png}"
+                             class="dropdown-toggle dropdown-button position-absolute" type="button"
+                             data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Rename</a></li>
 
-                            <div class="m-2 link-underline link-underline-opacity-0" th:text="${object.getName()}"/>
-                        </div>
 
-                        <div th:if="${!object.isFile}">
-                            <a class="link-underline link-underline-opacity-0"
-                               th:href="@{|/?path=${object.getPath()}|}">
-                                <img th:src="@{/images/folder.png}" alt="folderIcon"/>
-                            </a>
-                            <img th:src="@{/images/dropdown-button.png}" class="dropdown-toggle dropdown-button position-absolute" type="button" data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Rename</a></li>
-                                <li><a class="dropdown-item" href="#">Download</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                            </ul>
-                            <div class="m-2 " th:text="${object.getName()}"/>
+                            <li>
+                                <form th:method="GET" th:action="@{/file/download}" th:object="${downloadFileRequestDto}">
+                                <input th:name="owner" th:value="${object.owner}" type="hidden">
+                                <input th:name="path" th:value="${object.path}" type="hidden">
+                                <input th:name="name" th:value="${object.name}" type="hidden">
+                                    <button class="dropdown-item" type="submit">Download</button>
+                                </form>
 
-                        </div>
+                            </li>
+
+
+                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                        </ul>
+                        <div class="m-2 " th:text="${object.getName()}"/>
 
                     </div>
 
