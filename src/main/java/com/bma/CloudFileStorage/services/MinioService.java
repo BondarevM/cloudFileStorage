@@ -34,12 +34,12 @@ public class MinioService {
         this.minioClient = minioClient;
     }
 
-    public void uploadFile(MultipartFile file) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void uploadFile(MultipartFile file, String path) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         if (file.getOriginalFilename().isEmpty()) {
             return;
         }
 
-        String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/"  + file.getOriginalFilename();
+        String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/"  + path + file.getOriginalFilename();
 
         minioClient.putObject(
                 PutObjectArgs.builder()
@@ -51,9 +51,9 @@ public class MinioService {
         );
     }
 
-    public void uploadFolder(List<MultipartFile> folder) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void uploadFolder(List<MultipartFile> folder, String path) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         for (MultipartFile file : folder) {
-            uploadFile(file);
+            uploadFile(file, path);
             ;
         }
     }
@@ -73,20 +73,19 @@ public class MinioService {
         );
 
         try {
-            for (Result<Item> result : results) {
-                if (result.get().objectName().contains(".")) {
+            for (Result<Item> result : results) {if (result.get().objectName().contains(".")) {
                     String fullPath = result.get().objectName();
+                if (fullPath.endsWith("/")) {
+                    fullPath = fullPath.substring(0, fullPath.length() - 1);
+                }
                     int lastSlashIndex = fullPath.lastIndexOf("/");
                     int firstSlashIndex = fullPath.indexOf("/");
 
                     String resultPath = fullPath.substring(firstSlashIndex + 1);
-                    if (fullPath.endsWith("/")) {
-                        fullPath = fullPath.substring(0, fullPath.length() - 1);
-                    }
 
 
-                    MinioResponseObjectDto minioResponseFileDto = new MinioResponseObjectDto(username, resultPath,
-                            fullPath.substring(lastSlashIndex + 1), true);
+
+                    MinioResponseObjectDto minioResponseFileDto = new MinioResponseObjectDto(username, resultPath,fullPath.substring(lastSlashIndex + 1), true);
 
 
                     objects.add(minioResponseFileDto);
@@ -94,14 +93,16 @@ public class MinioService {
 
                 } else {
                     String fullPath = result.get().objectName();
+                if (fullPath.endsWith("/")) {
+                    fullPath = fullPath.substring(0, fullPath.length() - 1);
+                }
+                    int lastSlashIndex = fullPath.lastIndexOf("/");
                     int firstSlashIndex = fullPath.indexOf("/");
                     String resultPath = fullPath.substring(firstSlashIndex + 1);
 
-                    if (fullPath.endsWith("/")) {
-                        fullPath = fullPath.substring(0, fullPath.length() - 1);
-                    }
 
-                    int lastSlashIndex = fullPath.lastIndexOf("/");
+
+
 
                     MinioResponseObjectDto minioResponseFolderDto = new MinioResponseObjectDto(username, resultPath, fullPath.substring(lastSlashIndex + 1), false);
 
@@ -118,25 +119,12 @@ public class MinioService {
     }
 
 
-//    public InputStreamResource downloadFile(DownloadFileRequestDto downloadFileRequestDto) {
-//
-//        try(
-//                InputStream stream = minioClient.getObject(
-//                        GetObjectArgs.builder()
-//                                .bucket(bucketName)
-//                                .object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath())
-//                                .build()
-//                )
-//                ){
-//            return new InputStreamResource(stream);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error occurred: " + e.getMessage());
-//        }
-//    }
-
-    public Mono<InputStreamResource> download(DownloadFileRequestDto downloadFileRequestDto) {
+    public Mono<InputStreamResource> downloadFile(DownloadFileRequestDto downloadFileRequestDto) {
         return Mono.fromCallable(() -> {
-            InputStream response = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath()).build());
+            InputStream response = minioClient.getObject(GetObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath())
+                    .build());
             return new InputStreamResource(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -24,14 +25,16 @@ public class FolderController {
     }
 
     @PostMapping("/upload")
-    public String uploadFolder(@RequestParam("folder") MultipartFile[] folder){
+    public RedirectView uploadFolder(@RequestParam("folder") MultipartFile[] folder,
+                               @RequestParam(value = "path", defaultValue = "", required = false) String path){
         List<MultipartFile> list = Arrays.stream(folder).toList();
         try {
-            minioService.uploadFolder(list);
+            minioService.uploadFolder(list, path);
         } catch (MinioException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
-
-        return "redirect:/";
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("/?path=" + path);
+        return redirectView;
     }
 }

@@ -24,6 +24,7 @@
                 <label for="folder">Choose a folder:</label>
 
                 <input type="file" id="folder" name="folder" webkitdirectory="true" multiple/>
+                <input type="hidden" name="path" th:each="breadcrumb, iterStat : ${breadcrumbs}" th:if="${iterStat.last}" th:value="${breadcrumb.url}">
                 <div class="d-flex justify-content-end mt-3">
                     <button class="btn btn-primary align-items-end" type="submit">Upload</button>
                 </div>
