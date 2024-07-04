@@ -34,6 +34,8 @@ public class FileController {
     public String uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestParam(value = "path", required = false, defaultValue = "") String path) {
 
+        int length = path.length();
+
         try {
             minioService.uploadFile(file);
         } catch (Exception e) {

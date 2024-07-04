@@ -11,15 +11,35 @@
 
 <div th:if="${isAuthenticated}">
 
+<div class="row">
 
+    <div class="col-3">
     <div th:replace="modal/uploadFile :: uploadFileButton"></div>
     <div th:replace="modal/uploadFile :: uploadFileModal"></div>
 
+
+
     <div th:replace="modal/uploadFolder :: uploadFolderButton"></div>
     <div th:replace="modal/uploadFolder :: uploadFolderModal"></div>
+    </div>
+
+    <div class="col-9 mt-3">
+                <span th:each="breadcrumb, iterStat : ${breadcrumbs}">
+                    <span th:if="${iterStat.last}">
+                         <span class="fs-5" th:text="${breadcrumb.name}"></span>
+                    </span>
+                    <span th:unless="${iterStat.last}">
+                        <a class="link-offset-2 link-underline link-underline-opacity-0 fs-5" th:href="@{|/?path=${breadcrumb.url}|}" th:text="${breadcrumb.name}"></a>
+                        <span> / </span>
+                    </span>
+                </span>
+    </div>
+</div>
 
     <div class="ms-5 me-5 mt-2 mb-5">
         <div class="container-fluid bg-body-secondary rounded p-2 text-center">
+
+
 
             <!-- Files Section -->
             <div>
@@ -41,10 +61,11 @@
 
 
                             <li>
-                                <form th:method="GET" th:action="@{/file/download}" th:object="${downloadFileRequestDto}">
-                                <input th:name="owner" th:value="${object.owner}" type="hidden">
-                                <input th:name="path" th:value="${object.path}" type="hidden">
-                                <input th:name="name" th:value="${object.name}" type="hidden">
+                                <form th:method="GET" th:action="@{/file/download}"
+                                      th:object="${downloadFileRequestDto}">
+                                    <input th:name="owner" th:value="${object.owner}" type="hidden">
+                                    <input th:name="path" th:value="${object.path}" type="hidden">
+                                    <input th:name="name" th:value="${object.name}" type="hidden">
                                     <button class="dropdown-item" type="submit">Download</button>
                                 </form>
 

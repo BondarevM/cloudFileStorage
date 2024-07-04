@@ -39,7 +39,7 @@ public class MinioService {
             return;
         }
 
-        String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/" + file.getOriginalFilename();
+        String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/"  + file.getOriginalFilename();
 
         minioClient.putObject(
                 PutObjectArgs.builder()
@@ -61,6 +61,9 @@ public class MinioService {
 
     public List<MinioResponseObjectDto> getFiles(String username, String path) {
         List<MinioResponseObjectDto> objects = new ArrayList<>();
+        if (!path.isEmpty() && !path.endsWith("/")){
+            path = path + "/";
+        }
 
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder()
@@ -107,6 +110,7 @@ public class MinioService {
             }
 
         } catch (Exception e) {
+
             throw new FileStorageException("Something wrong with file storage");
         }
 

@@ -24,8 +24,7 @@ public class FolderController {
     }
 
     @PostMapping("/upload")
-    public String uploadFolder(@RequestParam("folder") MultipartFile[] folder,
-                               @RequestParam(value = "path", required = false, defaultValue = "") String path){
+    public String uploadFolder(@RequestParam("folder") MultipartFile[] folder){
         List<MultipartFile> list = Arrays.stream(folder).toList();
         try {
             minioService.uploadFolder(list);
