@@ -11,31 +11,39 @@
 
 <div th:if="${isAuthenticated}">
 
-<div class="row">
+    <div class="row">
 
-    <div class="col-3">
-    <div th:replace="modal/uploadFile :: uploadFileButton"></div>
-    <div th:replace="modal/uploadFile :: uploadFileModal"></div>
+        <div class="col-3">
+            <div th:replace="~{modal/uploadFile :: uploadFileButton}"></div>
+            <div th:replace="~{modal/uploadFile :: uploadFileModal}"></div>
 
 
+            <div th:replace="~{modal/uploadFolder :: uploadFolderButton}"></div>
+            <div th:replace="~{modal/uploadFolder :: uploadFolderModal}"></div>
 
-    <div th:replace="modal/uploadFolder :: uploadFolderButton"></div>
-    <div th:replace="modal/uploadFolder :: uploadFolderModal"></div>
-    </div>
+            <div th:replace="~{modal/emptyFolder :: createEmptyFolderButton}"></div>
+            <div th:replace="~{modal/emptyFolder :: createEmptyFolderModal}"></div>
+        </div>
 
-    <div class="col-9 mt-3">
+        <div class="col-9 mt-3">
                 <span th:each="breadcrumb, iterStat : ${breadcrumbs}">
 
                     <span th:if="${iterStat.last}">
                          <span class="fs-5" th:text="${breadcrumb.name}"></span>
                     </span>
                     <span th:unless="${iterStat.last}">
-                        <a class="link-offset-2 link-underline link-underline-opacity-0 fs-5" th:href="@{|/?path=${breadcrumb.url}|}" th:text="${breadcrumb.name}"></a>
+                        <a class="link-offset-2 link-underline link-underline-opacity-0 fs-5"
+                           th:href="@{|/?path=${breadcrumb.url}|}" th:text="${breadcrumb.name}"></a>
                         <span> / </span>
                     </span>
                 </span>
+        </div>
     </div>
-</div>
+    <div th:if="${errors}">
+        <div class="alert alert-danger m-2"  th:each="error : ${errors}" >
+            <span th:text="${error.defaultMessage}"></span>
+        </div>
+    </div>
 
     <div class="ms-5 me-5 mt-2 mb-5">
         <div class="container-fluid bg-body-secondary rounded p-2 text-center">
