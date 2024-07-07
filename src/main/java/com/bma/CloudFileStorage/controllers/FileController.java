@@ -25,7 +25,7 @@ public class FileController {
 
     @PostMapping()
     public RedirectView uploadFile(@RequestParam("file") MultipartFile file,
-                             @RequestParam(value = "path", required = false, defaultValue = "") String path) {
+                                   @RequestParam(value = "path", required = false, defaultValue = "") String path) {
 
         try {
             minioService.uploadFile(file, path);
@@ -50,12 +50,13 @@ public class FileController {
 
 
     }
+
     @DeleteMapping()
-    public String deleteFile(@ModelAttribute ObjectRequestDto deleteFileRequestDto){
-        //minio/folder1/fileInFolder.txt
+    public String deleteFile(@ModelAttribute ObjectRequestDto deleteFileRequestDto) {
+
         String redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
 
-    minioService.deleteFile(deleteFileRequestDto);
+        minioService.deleteFile(deleteFileRequestDto);
         return "redirect:/?path=" + redirectPath;
     }
 

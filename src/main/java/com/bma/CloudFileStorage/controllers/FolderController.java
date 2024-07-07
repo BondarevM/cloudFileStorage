@@ -77,4 +77,14 @@ public class FolderController {
 
     }
 
+    @DeleteMapping()
+    public String deleteFolder(@ModelAttribute ObjectRequestDto deleteFileRequestDto) {
+        String redirectPath = "";
+        if (deleteFileRequestDto.getPath().contains("/"))
+             redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
+
+        minioService.deleteFolder(deleteFileRequestDto);
+        return "redirect:/?path=" + redirectPath;
+    }
+
 }

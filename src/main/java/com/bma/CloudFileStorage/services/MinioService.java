@@ -202,4 +202,28 @@ public class MinioService {
             //TODO handle exception
         }
     }
+
+    public void deleteFolder(ObjectRequestDto deleteFileRequestDto) {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .recursive(true)
+                        .prefix(deleteFileRequestDto.getOwner() + "/" + deleteFileRequestDto.getPath() + "/")
+                        .build()
+        );
+
+        for (Result<Item> result : results) {
+            try {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(result.get().objectName())
+                                .build()
+                );
+            } catch (Exception e) {
+                System.out.println();
+                //TODO exception handle
+            }
+        }
+    }
 }
