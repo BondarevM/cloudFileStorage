@@ -1,24 +1,20 @@
 package com.bma.CloudFileStorage.controllers;
 
 import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
-import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
+import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
 import com.bma.CloudFileStorage.util.EmptyFolderValidator;
-import io.minio.GetObjectResponse;
 import io.minio.errors.MinioException;
 import jakarta.validation.Valid;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import reactor.core.publisher.Mono;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,7 +35,7 @@ public class FolderController {
         this.emptyFolderValidator = emptyFolderValidator;
     }
 
-    @PostMapping("/upload")
+    @PostMapping()
     public RedirectView uploadFolder(@RequestParam("folder") MultipartFile[] folder,
                                      @RequestParam(value = "path", defaultValue = "", required = false) String path) {
         List<MultipartFile> list = Arrays.stream(folder).toList();
@@ -68,11 +64,11 @@ public class FolderController {
 
         return "redirect:/?path=" + path;
     }
-    @GetMapping("/download")
-    public ResponseEntity<byte[]> downloadFolder(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto){
+    @GetMapping()
+    public ResponseEntity<byte[]> downloadFolder(@ModelAttribute ObjectRequestDto downloadFolderRequestDto){
 
-        ByteArrayOutputStream byteArrayOutputStream = minioService.downloadFolder(downloadFileRequestDto);
-        String encodedFolderName = URLEncoder.encode(downloadFileRequestDto.getName());
+        ByteArrayOutputStream byteArrayOutputStream = minioService.downloadFolder(downloadFolderRequestDto);
+        String encodedFolderName = URLEncoder.encode(downloadFolderRequestDto.getName());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFolderName +".zip")

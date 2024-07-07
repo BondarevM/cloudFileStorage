@@ -2,24 +2,20 @@ package com.bma.CloudFileStorage.services;
 
 import com.bma.CloudFileStorage.exceptions.FileStorageException;
 import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
-import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
+import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -117,18 +113,7 @@ public class MinioService {
         return objects;
     }
 
-
-//    public Mono<InputStreamResource> downloadFile(DownloadFileRequestDto downloadFileRequestDto) {
-//        return Mono.fromCallable(() -> {
-//            InputStream response = minioClient.getObject(GetObjectArgs.builder()
-//                    .bucket(bucketName)
-//                    .object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath())
-//                    .build());
-//            return new InputStreamResource(response);
-//        }).subscribeOn(Schedulers.boundedElastic());
-//    }
-
-    public GetObjectResponse downloadFile(DownloadFileRequestDto downloadFileRequestDto) {
+    public GetObjectResponse downloadFile(ObjectRequestDto downloadFileRequestDto) {
 
         GetObjectResponse response = null;
         try {
@@ -158,10 +143,10 @@ public class MinioService {
     }
 
 
-    public ByteArrayOutputStream downloadFolder(DownloadFileRequestDto downloadFileRequestDto) {
-        List<DownloadFileRequestDto> allObjects = new ArrayList<>();
+    public ByteArrayOutputStream downloadFolder(ObjectRequestDto downloadFolderRequestDto) {
+        List<ObjectRequestDto> allObjects = new ArrayList<>();
 
-        String prefix = downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath();
+        String prefix = downloadFolderRequestDto.getOwner() + "/" + downloadFolderRequestDto.getPath();
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder().bucket(bucketName)
                         .prefix(prefix).recursive(true).build());
@@ -170,7 +155,7 @@ public class MinioService {
             try {
 
                 String path = result.get().objectName();
-                allObjects.add(new DownloadFileRequestDto("", path, ""));
+                allObjects.add(new ObjectRequestDto("", path, ""));
             } catch (Exception e) {
                 //TODO error handle
             }
@@ -178,10 +163,10 @@ public class MinioService {
 
 
         List<GetObjectResponse> result = new ArrayList<>();
-        for (DownloadFileRequestDto req : allObjects) {
+        for (ObjectRequestDto req : allObjects) {
             result.add(downloadFile(req));
         }
-        return zipFiles(result, downloadFileRequestDto.getName());
+        return zipFiles(result, downloadFolderRequestDto.getName());
 
     }
 
@@ -203,5 +188,18 @@ public class MinioService {
             //TODO handle exception
         }
         return baos;
+    }
+
+    public void deleteFile(ObjectRequestDto deleteFileRequestDto) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(deleteFileRequestDto.getOwner() + "/" + deleteFileRequestDto.getPath())
+                            .build()
+            );
+        } catch (Exception e) {
+            //TODO handle exception
+        }
     }
 }

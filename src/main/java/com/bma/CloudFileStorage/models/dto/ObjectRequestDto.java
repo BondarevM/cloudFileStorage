@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DownloadFileRequestDto {
+public class ObjectRequestDto {
     private String owner;
     private String path;
     private String name;

@@ -1,6 +1,6 @@
 package com.bma.CloudFileStorage.controllers;
 
-import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
+import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
 import io.minio.GetObjectResponse;
 import org.springframework.core.io.InputStreamResource;
@@ -23,7 +23,7 @@ public class FileController {
         this.minioService = minioService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping()
     public RedirectView uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestParam(value = "path", required = false, defaultValue = "") String path) {
 
@@ -37,8 +37,8 @@ public class FileController {
         return redirectView;
     }
 
-    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<InputStreamResource> downloadFile(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto) {
+    @GetMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<InputStreamResource> downloadFile(@ModelAttribute ObjectRequestDto downloadFileRequestDto) {
 
         GetObjectResponse getObjectResponse = minioService.downloadFile(downloadFileRequestDto);
         String encodedFileName = URLEncoder.encode(downloadFileRequestDto.getName());
@@ -50,4 +50,13 @@ public class FileController {
 
 
     }
+    @DeleteMapping()
+    public String deleteFile(@ModelAttribute ObjectRequestDto deleteFileRequestDto){
+        //minio/folder1/fileInFolder.txt
+        String redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
+
+    minioService.deleteFile(deleteFileRequestDto);
+        return "redirect:/?path=" + redirectPath;
+    }
+
 }

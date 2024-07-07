@@ -67,15 +67,15 @@
 
 
                             <li>
-                                <form th:if="${object.isFile}" th:method="GET" th:action="@{/file/download}"
-                                      th:object="${downloadFileRequestDto}">
+                                <form th:if="${object.isFile}" th:method="GET" th:action="@{/file}"
+                                      th:object="${objectRequestDto}">
                                     <input th:name="owner" th:value="${object.owner}" type="hidden">
                                     <input th:name="path" th:value="${object.path}" type="hidden">
                                     <input th:name="name" th:value="${object.name}" type="hidden">
                                     <button class="dropdown-item" type="submit">Download</button>
                                 </form>
-                                <form th:if="${!object.isFile}" th:method="GET" th:action="@{/folder/download}"
-                                      th:object="${downloadFileRequestDto}">
+                                <form th:if="${!object.isFile}" th:method="GET" th:action="@{/folder}"
+                                      th:object="${objectRequestDto}">
                                     <input th:name="owner" th:value="${object.owner}" type="hidden">
                                     <input th:name="path" th:value="${object.path}" type="hidden">
                                     <input th:name="name" th:value="${object.name}" type="hidden">
@@ -85,7 +85,25 @@
                             </li>
 
 
-                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                            <li>
+
+                                <form th:if="${object.isFile}" th:method="POST" th:action="@{/file}"
+                                      th:object="${objectRequestDto}">
+                                    <input type="hidden" name="_method" value="delete">
+                                    <input th:name="owner" th:value="${object.owner}" type="hidden">
+                                    <input th:name="path" th:value="${object.path}" type="hidden">
+                                    <input th:name="name" th:value="${object.name}" type="hidden">
+                                    <button class="dropdown-item" type="submit">Delete</button>
+                                </form>
+                                <form th:if="${!object.isFile}" th:method="DELETE" th:action="@{/folder}"
+                                      th:object="${objectRequestDto}">
+                                    <input th:name="owner" th:value="${object.owner}" type="hidden">
+                                    <input th:name="path" th:value="${object.path}" type="hidden">
+                                    <input th:name="name" th:value="${object.name}" type="hidden">
+                                    <button class="dropdown-item" type="submit">Delete</button>
+                                </form>
+
+                            </li>
                         </ul>
                         <div class="m-2 " th:text="${object.getName()}"/>
 
