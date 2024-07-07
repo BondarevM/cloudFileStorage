@@ -1,13 +1,23 @@
 package com.bma.CloudFileStorage.controllers;
 
+import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
+import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
+import com.bma.CloudFileStorage.util.EmptyFolderValidator;
 import io.minio.errors.MinioException;
+import jakarta.validation.Valid;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -19,14 +29,16 @@ import java.util.List;
 @RequestMapping("/folder")
 public class FolderController {
     private final MinioService minioService;
+    private final EmptyFolderValidator emptyFolderValidator;
 
-    public FolderController(MinioService minioService) {
+    public FolderController(MinioService minioService, EmptyFolderValidator emptyFolderValidator) {
         this.minioService = minioService;
+        this.emptyFolderValidator = emptyFolderValidator;
     }
 
     @PostMapping("/upload")
     public RedirectView uploadFolder(@RequestParam("folder") MultipartFile[] folder,
-                               @RequestParam(value = "path", defaultValue = "", required = false) String path){
+                                     @RequestParam(value = "path", defaultValue = "", required = false) String path) {
         List<MultipartFile> list = Arrays.stream(folder).toList();
         try {
             minioService.uploadFolder(list, path);
@@ -37,4 +49,33 @@ public class FolderController {
         redirectView.setUrl("/?path=" + path);
         return redirectView;
     }
+
+    @PostMapping("/create")
+    public String createFolder(@ModelAttribute("createEmptyFolderDto") @Valid CreateEmptyFolderDto createEmptyFolderDto,
+                                     BindingResult bindingResult,
+                                     @RequestParam(value = "path", defaultValue = "", required = false) String path,
+                                     RedirectAttributes redirectAttributes) {
+        emptyFolderValidator.validate(createEmptyFolderDto, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/?path=" + path;
+        }
+        minioService.createEmptyFolder(path, createEmptyFolderDto);
+
+        return "redirect:/?path=" + path;
+    }
+//    @GetMapping("/download")
+//    public  ResponseEntity<List<InputStreamResource>> downloadFolder(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto){
+//
+//        List<InputStreamResource> inputStreamResources = minioService.downloadFolder(downloadFileRequestDto);
+//
+//
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "Papka")
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE).body(inputStreamResources);
+//
+//
+//    }
+
 }

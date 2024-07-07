@@ -2,6 +2,7 @@ package com.bma.CloudFileStorage.controllers;
 
 import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
+import io.minio.GetObjectResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,14 +39,14 @@ public class FileController {
 
     @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> downloadFile(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto) {
-        InputStreamResource file = minioService.downloadFile(downloadFileRequestDto).block();
+
+        GetObjectResponse getObjectResponse = minioService.downloadFile(downloadFileRequestDto);
         String encodedFileName = URLEncoder.encode(downloadFileRequestDto.getName());
 
-
-        System.out.println();
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFileName)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE).body(file);
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .body(new InputStreamResource(getObjectResponse));
 
 
     }

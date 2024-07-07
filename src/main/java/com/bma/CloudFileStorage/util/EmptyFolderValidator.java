@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 @Component
-public class CreateFolderRequestDtoValidator implements Validator {
+public class EmptyFolderValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
         return CreateEmptyFolderDto.class.equals(clazz);
@@ -16,7 +16,7 @@ public class CreateFolderRequestDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
     CreateEmptyFolderDto dto = (CreateEmptyFolderDto) target;
     if (dto.getName().contains("/")){
-        errors.rejectValue("error", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '/' in name");
+        errors.rejectValue("name", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '/' in name");
     }
     }
 }

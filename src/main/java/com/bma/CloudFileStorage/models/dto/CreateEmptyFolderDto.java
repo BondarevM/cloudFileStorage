@@ -1,9 +1,13 @@
 package com.bma.CloudFileStorage.models.dto;
 
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-public class CreateFolderRequestDto {
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class CreateEmptyFolderDto {
 
     private String name;
 }
