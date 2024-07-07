@@ -4,6 +4,7 @@ import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
 import com.bma.CloudFileStorage.models.dto.DownloadFileRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
 import com.bma.CloudFileStorage.util.EmptyFolderValidator;
+import io.minio.GetObjectResponse;
 import io.minio.errors.MinioException;
 import jakarta.validation.Valid;
 import org.springframework.core.io.InputStreamResource;
@@ -19,7 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import reactor.core.publisher.Mono;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -65,17 +68,17 @@ public class FolderController {
 
         return "redirect:/?path=" + path;
     }
-//    @GetMapping("/download")
-//    public  ResponseEntity<List<InputStreamResource>> downloadFolder(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto){
-//
-//        List<InputStreamResource> inputStreamResources = minioService.downloadFolder(downloadFileRequestDto);
-//
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "Papka")
-//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE).body(inputStreamResources);
-//
-//
-//    }
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFolder(@ModelAttribute DownloadFileRequestDto downloadFileRequestDto){
+
+        ByteArrayOutputStream byteArrayOutputStream = minioService.downloadFolder(downloadFileRequestDto);
+        String encodedFolderName = URLEncoder.encode(downloadFileRequestDto.getName());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + encodedFolderName +".zip")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .body(byteArrayOutputStream.toByteArray());
+
+    }
 
 }
