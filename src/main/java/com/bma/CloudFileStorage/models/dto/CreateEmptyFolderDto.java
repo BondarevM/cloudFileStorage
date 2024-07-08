@@ -8,6 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class CreateEmptyFolderDto {
-
     private String name;
 }

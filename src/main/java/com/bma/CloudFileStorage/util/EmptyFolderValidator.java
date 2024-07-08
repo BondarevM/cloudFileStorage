@@ -17,10 +17,10 @@ public class EmptyFolderValidator implements Validator {
     public void validate(Object target, Errors errors) {
         CreateEmptyFolderDto dto = (CreateEmptyFolderDto) target;
         if (dto.getName().contains("/")) {
-            errors.rejectValue("name", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '/' in name");
+            errors.rejectValue("name", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '/' and '.' in name");
         }
         if (dto.getName().contains(".")) {
-            errors.rejectValue("name", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '.' in name");
+            errors.rejectValue("name", HttpStatus.BAD_REQUEST.toString(), "The folder must not contain '/' and '.' in name");
         }
     }
 }

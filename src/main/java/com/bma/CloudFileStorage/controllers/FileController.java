@@ -2,6 +2,7 @@ package com.bma.CloudFileStorage.controllers;
 
 import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
+import com.bma.CloudFileStorage.util.CastDtoUtil;
 import io.minio.GetObjectResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -33,12 +34,15 @@ public class FileController {
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("/?path=" + path);
+
+        redirectView.setUrl("/?path=" +  URLEncoder.encode(path));
         return redirectView;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> downloadFile(@ModelAttribute ObjectRequestDto downloadFileRequestDto) {
+
+
 
         GetObjectResponse getObjectResponse = minioService.downloadFile(downloadFileRequestDto);
         String encodedFileName = URLEncoder.encode(downloadFileRequestDto.getName());
@@ -54,9 +58,27 @@ public class FileController {
     @DeleteMapping()
     public String deleteFile(@ModelAttribute ObjectRequestDto deleteFileRequestDto) {
 
-        String redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
+        String redirectPath ="";
+
+        if (deleteFileRequestDto.getPath().contains("/")){
+            redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
+        }
 
         minioService.deleteFile(deleteFileRequestDto);
+
+        return "redirect:/?path=" + redirectPath;
+    }
+    @PatchMapping()
+    public String renameFile(@ModelAttribute ObjectRequestDto renameFileDto){
+        String redirectPath ="";
+
+        if (renameFileDto.getPath().contains("/")){
+            redirectPath = renameFileDto.getPath().substring(0, renameFileDto.getPath().lastIndexOf("/"));
+        }
+       minioService.renameFile(CastDtoUtil.castToRenameFileDto(renameFileDto));
+
+
+
         return "redirect:/?path=" + redirectPath;
     }
 

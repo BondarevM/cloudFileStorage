@@ -1,7 +1,9 @@
 package com.bma.CloudFileStorage.services;
 
 import com.bma.CloudFileStorage.exceptions.FileStorageException;
+import com.bma.CloudFileStorage.exceptions.IllegalFolderNameException;
 import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
+import com.bma.CloudFileStorage.models.dto.RenameObjectRequestDto;
 import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
 import io.minio.*;
@@ -148,8 +150,11 @@ public class MinioService {
 
         String prefix = downloadFolderRequestDto.getOwner() + "/" + downloadFolderRequestDto.getPath();
         Iterable<Result<Item>> results = minioClient.listObjects(
-                ListObjectsArgs.builder().bucket(bucketName)
-                        .prefix(prefix).recursive(true).build());
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(prefix)
+                        .recursive(true)
+                        .build());
 
         for (Result<Item> result : results) {
             try {
@@ -226,4 +231,71 @@ public class MinioService {
             }
         }
     }
+
+    public void renameFile(RenameObjectRequestDto renameFileDto) {
+
+        try {
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(renameFileDto.getOwner() + "/" + renameFileDto.getNewPath())
+                            .source(
+                                    CopySource.builder()
+                                            .bucket(bucketName)
+                                            .object(renameFileDto.getOwner() + "/" +renameFileDto.getSourcePath())
+                                            .build())
+                            .build());
+
+            deleteFile(new ObjectRequestDto(renameFileDto.getOwner(), renameFileDto.getSourcePath(),""));
+        } catch (Exception e) {
+            //TODO exception handle
+        }
+    }
+
+    public void renameFolder(ObjectRequestDto renameFolderDto) {
+
+        if (renameFolderDto.getName().contains("/") || renameFolderDto.getName().contains(".")){
+            throw new IllegalFolderNameException("Folder name must not contain '/' and '.'");
+        }
+
+        String prefix = renameFolderDto.getOwner() + "/" + renameFolderDto.getPath() ;
+        List<RenameObjectRequestDto> renameFilesDto = new ArrayList<>();
+
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(prefix)
+                        .recursive(true)
+                        .build());
+
+        for (Result<Item> result : results){
+            try {
+                String fullPath = result.get().objectName();
+
+                int firstSlashIndex = fullPath.indexOf("/");
+                String sourcePath = fullPath.substring(firstSlashIndex + 1);
+
+                String oldFolderName = renameFolderDto.getPath();
+                if ( renameFolderDto.getPath().contains("/")){
+                    int lastSlashIndex = renameFolderDto.getPath().lastIndexOf("/");
+                    oldFolderName = renameFolderDto.getPath().substring(lastSlashIndex + 1);
+                }
+
+                String oldPart = renameFolderDto.getOwner() + "/" + renameFolderDto.getPath();
+                int lastSlashIndex = oldPart.lastIndexOf("/");
+
+                String newPart = oldPart.substring(0, lastSlashIndex) + "/" + renameFolderDto.getName();
+
+                String newPath = fullPath.replace(oldPart, newPart ).substring(firstSlashIndex + 1);
+
+                renameFile(new RenameObjectRequestDto(renameFolderDto.getOwner(), sourcePath, newPath));
+
+            } catch (Exception e) {
+                //TODO error handle
+            }
+
+        }
+
+    }
+
 }

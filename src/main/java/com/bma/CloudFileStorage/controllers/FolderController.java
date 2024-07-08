@@ -45,7 +45,7 @@ public class FolderController {
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("/?path=" + path);
+        redirectView.setUrl("/?path=" + URLEncoder.encode(path));
         return redirectView;
     }
 
@@ -57,12 +57,13 @@ public class FolderController {
         emptyFolderValidator.validate(createEmptyFolderDto, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+//            redirectAttributes.addFlashAttribute("error", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("error", bindingResult.getAllErrors().get(0).getDefaultMessage());
             return "redirect:/?path=" + path;
         }
         minioService.createEmptyFolder(path, createEmptyFolderDto);
 
-        return "redirect:/?path=" + path;
+        return "redirect:/?path=" + URLEncoder.encode(path);
     }
     @GetMapping()
     public ResponseEntity<byte[]> downloadFolder(@ModelAttribute ObjectRequestDto downloadFolderRequestDto){
@@ -87,4 +88,16 @@ public class FolderController {
         return "redirect:/?path=" + redirectPath;
     }
 
+    @PatchMapping()
+    public String renameFile(@ModelAttribute ObjectRequestDto renameFolderDto){
+        String redirectPath ="";
+
+        if (renameFolderDto.getPath().contains("/")){
+            redirectPath = renameFolderDto.getPath().substring(0, renameFolderDto.getPath().lastIndexOf("/"));
+        }
+
+        minioService.renameFolder(renameFolderDto);
+
+        return "redirect:/?path=" + redirectPath;
+    }
 }

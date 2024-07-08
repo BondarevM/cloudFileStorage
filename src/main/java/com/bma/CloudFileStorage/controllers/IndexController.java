@@ -25,7 +25,8 @@ public class IndexController extends AbstractController {
     @GetMapping("/")
     public String homePage(Model model,
                            @RequestParam(value = "path", required = false, defaultValue = "") String path) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();List<MinioResponseObjectDto> objects = minioService.getFiles(authentication.getName(), path);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<MinioResponseObjectDto> objects = minioService.getFiles(authentication.getName(), path);
 //
 //        List<String> files = objects.get("fileNames");
 //        List<String> folders = objects.get("folderNames");

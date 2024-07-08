@@ -23,6 +23,10 @@
 
             <div th:replace="~{modal/emptyFolder :: createEmptyFolderButton}"></div>
             <div th:replace="~{modal/emptyFolder :: createEmptyFolderModal}"></div>
+
+
+            <div th:replace="~{modal/renameFile :: renameFileModal}"></div>
+            <div th:replace="~{modal/renameFolder :: renameFolderModal}"></div>
         </div>
 
         <div class="col-9 mt-3">
@@ -39,11 +43,12 @@
                 </span>
         </div>
     </div>
-    <div th:if="${errors}">
-        <div class="alert alert-danger m-2"  th:each="error : ${errors}" >
-            <span th:text="${error.defaultMessage}"></span>
+
+
+        <div  th:if="${error}" class="alert alert-danger m-2">
+            <span th:text="${error}"></span>
         </div>
-    </div>
+
 
     <div class="ms-5 me-5 mt-2 mb-5">
         <div class="container-fluid bg-body-secondary rounded p-2 text-center">
@@ -63,8 +68,19 @@
                              class="dropdown-toggle dropdown-button position-absolute" type="button"
                              data-bs-toggle="dropdown" aria-expanded="false" alt="dropdownButton"/>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Rename</a></li>
+                            <li>
 
+                                <a th:if="${object.isFile}" type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#renameFile"
+                                   th:data-object-name="${object.name}" th:data-object-path="${object.path}" th:data-object-owner="${object.owner}">
+                                    Rename
+                                </a>
+                                <a th:if="${!object.isFile}" type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#renameFolder"
+                                   th:data-object-name="${object.name}" th:data-object-path="${object.path}" th:data-object-owner="${object.owner}">
+                                    Rename
+                                </a>
+<!--                                <div th:replace="~{modal/rename :: renameObjectButton}"></div>-->
+<!--                                <a class="dropdown-item" href="#">Rename</a>-->
+                            </li>
 
                             <li>
                                 <form th:if="${object.isFile}" th:method="GET" th:action="@{/file}"
@@ -84,7 +100,7 @@
 
                             </li>
 
-
+                            <li><hr class="dropdown-divider"></li>
                             <li>
 
                                 <form th:if="${object.isFile}" th:method="POST" th:action="@{/file}"
@@ -120,6 +136,8 @@
 
 
 <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/renameFile.js}"></script>
+<script th:src="@{/js/renameFolder.js}"></script>
 
 </body>
 </html>
