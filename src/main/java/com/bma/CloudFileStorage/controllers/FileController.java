@@ -66,7 +66,7 @@ public class FileController {
 
         minioService.deleteFile(deleteFileRequestDto);
 
-        return "redirect:/?path=" + redirectPath;
+        return "redirect:/?path=" + URLEncoder.encode(redirectPath);
     }
     @PatchMapping()
     public String renameFile(@ModelAttribute ObjectRequestDto renameFileDto){
@@ -79,7 +79,7 @@ public class FileController {
 
 
 
-        return "redirect:/?path=" + redirectPath;
+        return "redirect:/?path=" + URLEncoder.encode(redirectPath);
     }
 
 }

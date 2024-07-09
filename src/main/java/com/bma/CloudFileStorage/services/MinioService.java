@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -94,6 +95,10 @@ public class MinioService {
 
                 } else {
                     String fullPath = result.get().objectName();
+                    if (fullPath.equals(username + "/" + path)){
+                        continue;
+                    }
+
                     if (fullPath.endsWith("/")) {
                         fullPath = fullPath.substring(0, fullPath.length() - 1);
                     }
@@ -137,6 +142,7 @@ public class MinioService {
             minioClient.putObject(
                     PutObjectArgs.builder().bucket(bucketName).object(pathForCurrentUser).stream(
                                     new ByteArrayInputStream(new byte[]{}), 0, -1)
+
                             .build());
         } catch (Exception e) {
             // TODO error handle
