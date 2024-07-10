@@ -3,6 +3,7 @@ package com.bma.CloudFileStorage.controllers;
 import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
 import com.bma.CloudFileStorage.models.dto.ObjectRequestDto;
+import com.bma.CloudFileStorage.models.dto.SearchRequestDto;
 import com.bma.CloudFileStorage.services.MinioService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -85,7 +84,6 @@ public class MinioService {
                     }
                     int lastSlashIndex = fullPath.lastIndexOf("/");
                     int firstSlashIndex = fullPath.indexOf("/");
-
                     String resultPath = fullPath.substring(firstSlashIndex + 1);
 
                     MinioResponseObjectDto minioResponseFileDto = new MinioResponseObjectDto(username, resultPath, fullPath.substring(lastSlashIndex + 1), true);
@@ -116,6 +114,7 @@ public class MinioService {
 
             throw new FileStorageException("Something wrong with file storage");
         }
+
 
         return objects;
     }

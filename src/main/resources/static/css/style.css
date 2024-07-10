@@ -6,3 +6,12 @@
     height: 25px;
 }
 
+.navbar {
+    position: relative;
+}
+.search-form {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
