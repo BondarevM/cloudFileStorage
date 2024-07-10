@@ -239,9 +239,9 @@ public class MinioService {
     }
 
     public void renameFile(RenameObjectRequestDto renameFileDto) {
-        if (!renameFileDto.getNewPath().contains(".")){
-            throw new IllegalFileNameException("File must contain '.' in name");
-        }
+//        if (!renameFileDto.getNewPath().contains(".")){
+//            throw new IllegalFileNameException("File must contain '.' in name");
+//        }
         try {
             minioClient.copyObject(
                     CopyObjectArgs.builder()

@@ -85,7 +85,7 @@ public class FolderController {
              redirectPath = deleteFileRequestDto.getPath().substring(0, deleteFileRequestDto.getPath().lastIndexOf("/"));
 
         minioService.deleteFolder(deleteFileRequestDto);
-        return "redirect:/?path=" + redirectPath;
+        return "redirect:/?path=" +URLEncoder.encode(redirectPath);
     }
 
     @PatchMapping()
@@ -98,6 +98,6 @@ public class FolderController {
 
         minioService.renameFolder(renameFolderDto);
 
-        return "redirect:/?path=" + redirectPath;
+        return "redirect:/?path=" + URLEncoder.encode(redirectPath);
     }
 }

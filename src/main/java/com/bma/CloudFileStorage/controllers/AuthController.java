@@ -24,11 +24,19 @@ public class AuthController extends AbstractController {
 
     @GetMapping("/login")
     public String login(Model model) {
+        if(model.getAttribute("isAuthenticated").equals(true)){
+            return "redirect:/";
+        }
         return "/login";
     }
 
     @GetMapping("/registration")
-    public String registration(@ModelAttribute("customerDto") CustomerDto customerDto) {
+    public String registration(@ModelAttribute("customerDto") CustomerDto customerDto,
+                               Model model) {
+
+        if(model.getAttribute("isAuthenticated").equals(true)){
+            return "redirect:/";
+        }
         return "/registration";
     }
 
