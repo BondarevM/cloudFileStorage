@@ -1,6 +1,7 @@
 package com.bma.CloudFileStorage.services;
 
 import com.bma.CloudFileStorage.exceptions.FileStorageException;
+import com.bma.CloudFileStorage.exceptions.IllegalFileNameException;
 import com.bma.CloudFileStorage.exceptions.IllegalFolderNameException;
 import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
 import com.bma.CloudFileStorage.models.dto.RenameObjectRequestDto;
@@ -238,7 +239,9 @@ public class MinioService {
     }
 
     public void renameFile(RenameObjectRequestDto renameFileDto) {
-
+        if (!renameFileDto.getNewPath().contains(".")){
+            throw new IllegalFileNameException("File must contain '.' in name");
+        }
         try {
             minioClient.copyObject(
                     CopyObjectArgs.builder()

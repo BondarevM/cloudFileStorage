@@ -5,6 +5,7 @@ import com.bma.CloudFileStorage.services.RegistrationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +23,7 @@ public class AuthController extends AbstractController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
         return "/login";
     }
 
@@ -44,7 +45,8 @@ public class AuthController extends AbstractController {
 
         registrationService.register(customerDto);
 
-        redirectAttributes.getFlashAttributes();
+        redirectAttributes.addFlashAttribute("successMessage", "Registration completed successfully, please login");
+
 
         return "redirect:/login";
     }
