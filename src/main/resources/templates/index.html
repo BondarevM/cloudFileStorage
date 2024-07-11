@@ -13,7 +13,7 @@
 
     <div class="row">
 
-        <div class="col-3">
+        <div class="col-5">
             <div th:replace="~{modal/uploadFile :: uploadFileButton}"></div>
             <div th:replace="~{modal/uploadFile :: uploadFileModal}"></div>
 
@@ -29,7 +29,7 @@
             <div th:replace="~{modal/renameFolder :: renameFolderModal}"></div>
         </div>
 
-        <div class="col-9 mt-3">
+        <div class="col-7 mt-3">
                 <span th:each="breadcrumb, iterStat : ${breadcrumbs}">
 
                     <span th:if="${iterStat.last}">

@@ -28,7 +28,7 @@ public class AuthController extends AbstractController {
         if (model.getAttribute("isAuthenticated").equals(true)) {
             return "redirect:/";
         }
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/registration")
@@ -37,7 +37,7 @@ public class AuthController extends AbstractController {
         if (model.getAttribute("isAuthenticated").equals(true)) {
             return "redirect:/";
         }
-        return "/registration";
+        return "registration";
     }
 
     @PostMapping("/registration")
@@ -47,13 +47,13 @@ public class AuthController extends AbstractController {
         registrationService.validateCustomer(customerDto);
 
         if (bindingResult.hasErrors()) {
-            return "/registration";
+            return "registration";
         }
 
         registrationService.register(customerDto);
 
         redirectAttributes.addFlashAttribute("successMessage", "Registration completed successfully, please login");
 
-        return "redirect:/login";
+        return "redirect:login";
     }
 }

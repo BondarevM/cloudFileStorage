@@ -8,6 +8,6 @@ public class ErrorController extends AbstractController {
 
     @GetMapping("/error")
     public String error() {
-        return "/error";
+        return "error";
     }
 }
