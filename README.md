@@ -1,4 +1,4 @@
-![image](https://github.com/BondarevM/cloudFileStorage/assets/99888305/35b5e83f-0521-4841-b993-3db5f27e18f9)# Cloud file storage project
+# Cloud file storage project
 The project was implemented according to the requirements presented in [this course](https://zhukovsd.github.io/java-backend-learning-course/Projects/CloudFileStorage/).
 
 Multi-user file cloud. Users of the service can use it to download and store files. The inspiration for the project is Google Drive.
