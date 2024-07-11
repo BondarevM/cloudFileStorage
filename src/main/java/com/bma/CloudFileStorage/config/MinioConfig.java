@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @Getter
 @Setter
 @Configuration
@@ -16,10 +17,10 @@ public class MinioConfig {
     private String password;
 
     @Bean
-    public MinioClient minioClient(){
+    public MinioClient minioClient() {
         return MinioClient.builder()
                 .endpoint(url)
-                .credentials(username,password)
+                .credentials(username, password)
                 .build();
     }
 }

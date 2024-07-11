@@ -58,7 +58,6 @@ public class MinioService {
     public void uploadFolder(List<MultipartFile> folder, String path) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         for (MultipartFile file : folder) {
             uploadFile(file, path);
-
         }
     }
 
@@ -91,16 +90,16 @@ public class MinioService {
 
                     objects.add(minioResponseFileDto);
 
-
                 } else {
                     String fullPath = result.get().objectName();
-                    if (fullPath.equals(username + "/" + path)){
+                    if (fullPath.equals(username + "/" + path)) {
                         continue;
                     }
 
                     if (fullPath.endsWith("/")) {
                         fullPath = fullPath.substring(0, fullPath.length() - 1);
                     }
+
                     int lastSlashIndex = fullPath.lastIndexOf("/");
                     int firstSlashIndex = fullPath.indexOf("/");
                     String resultPath = fullPath.substring(firstSlashIndex + 1);
@@ -112,32 +111,30 @@ public class MinioService {
             }
 
         } catch (Exception e) {
-
             throw new FileStorageException("Something wrong with file storage");
         }
-
 
         return objects;
     }
 
     public GetObjectResponse downloadFile(ObjectRequestDto downloadFileRequestDto) {
-
         GetObjectResponse response = null;
+
         try {
             response = minioClient.getObject(GetObjectArgs.builder()
                     .bucket(bucketName)
                     .object(downloadFileRequestDto.getOwner() + "/" + downloadFileRequestDto.getPath())
                     .build());
         } catch (Exception e) {
-            //TODO error handle
+            throw new FileStorageException("Something wrong with file storage");
         }
+
         return response;
-
-
     }
 
     public void createEmptyFolder(String path, CreateEmptyFolderDto createEmptyFolderDto) {
         String pathForCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName() + "/" + path + createEmptyFolderDto.getName() + "/";
+
         try {
             minioClient.putObject(
                     PutObjectArgs.builder().bucket(bucketName).object(pathForCurrentUser).stream(
@@ -145,8 +142,7 @@ public class MinioService {
 
                             .build());
         } catch (Exception e) {
-            // TODO error handle
-            System.out.println();
+            throw new FileStorageException("Something wrong with file storage");
         }
     }
 
@@ -163,22 +159,22 @@ public class MinioService {
                         .build());
 
         for (Result<Item> result : results) {
-            try {
 
+            try {
                 String path = result.get().objectName();
                 allObjects.add(new ObjectRequestDto("", path, ""));
             } catch (Exception e) {
-                //TODO error handle
+                throw new FileStorageException("Something wrong with file storage");
             }
         }
 
-
         List<GetObjectResponse> result = new ArrayList<>();
+
         for (ObjectRequestDto req : allObjects) {
             result.add(downloadFile(req));
         }
-        return zipFiles(result, downloadFolderRequestDto.getName());
 
+        return zipFiles(result, downloadFolderRequestDto.getName());
     }
 
     private ByteArrayOutputStream zipFiles(List<GetObjectResponse> objects, String folderName) {
@@ -196,8 +192,9 @@ public class MinioService {
             }
 
         } catch (Exception e) {
-            //TODO handle exception
+            throw new FileStorageException("Something wrong with file storage");
         }
+
         return baos;
     }
 
@@ -210,7 +207,7 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
-            //TODO handle exception
+            throw new FileStorageException("Something wrong with file storage");
         }
     }
 
@@ -224,6 +221,7 @@ public class MinioService {
         );
 
         for (Result<Item> result : results) {
+
             try {
                 minioClient.removeObject(
                         RemoveObjectArgs.builder()
@@ -232,16 +230,12 @@ public class MinioService {
                                 .build()
                 );
             } catch (Exception e) {
-                System.out.println();
-                //TODO exception handle
+                throw new FileStorageException("Something wrong with file storage");
             }
         }
     }
 
     public void renameFile(RenameObjectRequestDto renameFileDto) {
-//        if (!renameFileDto.getNewPath().contains(".")){
-//            throw new IllegalFileNameException("File must contain '.' in name");
-//        }
         try {
             minioClient.copyObject(
                     CopyObjectArgs.builder()
@@ -250,24 +244,23 @@ public class MinioService {
                             .source(
                                     CopySource.builder()
                                             .bucket(bucketName)
-                                            .object(renameFileDto.getOwner() + "/" +renameFileDto.getSourcePath())
+                                            .object(renameFileDto.getOwner() + "/" + renameFileDto.getSourcePath())
                                             .build())
                             .build());
 
-            deleteFile(new ObjectRequestDto(renameFileDto.getOwner(), renameFileDto.getSourcePath(),""));
+            deleteFile(new ObjectRequestDto(renameFileDto.getOwner(), renameFileDto.getSourcePath(), ""));
         } catch (Exception e) {
-            //TODO exception handle
+            throw new IllegalFileNameException("File must contain '.' in name");
         }
     }
 
     public void renameFolder(ObjectRequestDto renameFolderDto) {
 
-        if (renameFolderDto.getName().contains("/") || renameFolderDto.getName().contains(".")){
+        if (renameFolderDto.getName().contains("/") || renameFolderDto.getName().contains(".")) {
             throw new IllegalFolderNameException("Folder name must not contain '/' and '.'");
         }
 
-        String prefix = renameFolderDto.getOwner() + "/" + renameFolderDto.getPath() ;
-        List<RenameObjectRequestDto> renameFilesDto = new ArrayList<>();
+        String prefix = renameFolderDto.getOwner() + "/" + renameFolderDto.getPath();
 
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder()
@@ -276,34 +269,25 @@ public class MinioService {
                         .recursive(true)
                         .build());
 
-        for (Result<Item> result : results){
+        for (Result<Item> result : results) {
+
             try {
                 String fullPath = result.get().objectName();
-
                 int firstSlashIndex = fullPath.indexOf("/");
                 String sourcePath = fullPath.substring(firstSlashIndex + 1);
-
-                String oldFolderName = renameFolderDto.getPath();
-                if ( renameFolderDto.getPath().contains("/")){
-                    int lastSlashIndex = renameFolderDto.getPath().lastIndexOf("/");
-                    oldFolderName = renameFolderDto.getPath().substring(lastSlashIndex + 1);
-                }
 
                 String oldPart = renameFolderDto.getOwner() + "/" + renameFolderDto.getPath();
                 int lastSlashIndex = oldPart.lastIndexOf("/");
 
                 String newPart = oldPart.substring(0, lastSlashIndex) + "/" + renameFolderDto.getName();
 
-                String newPath = fullPath.replace(oldPart, newPart ).substring(firstSlashIndex + 1);
+                String newPath = fullPath.replace(oldPart, newPart).substring(firstSlashIndex + 1);
 
                 renameFile(new RenameObjectRequestDto(renameFolderDto.getOwner(), sourcePath, newPath));
 
             } catch (Exception e) {
-                //TODO error handle
+                throw new IllegalFileNameException("File must contain '.' in name");
             }
-
         }
-
     }
-
 }

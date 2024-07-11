@@ -3,9 +3,8 @@ package com.bma.CloudFileStorage.config;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,6 +13,7 @@ import org.springframework.context.event.EventListener;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 @RequiredArgsConstructor
 @Configuration
 public class MinioBucketConfiguration {
@@ -31,6 +31,5 @@ public class MinioBucketConfiguration {
         } catch (MinioException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("Something went wrong, error message: " + e.getMessage());
         }
-
     }
 }

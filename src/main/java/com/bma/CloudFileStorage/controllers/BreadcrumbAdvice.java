@@ -1,4 +1,4 @@
-package com.bma.CloudFileStorage.util;
+package com.bma.CloudFileStorage.controllers;
 
 import com.bma.CloudFileStorage.models.Breadcrumb;
 import com.bma.CloudFileStorage.services.BreadcrumbService;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+
 @ControllerAdvice
 public class BreadcrumbAdvice {
     private final BreadcrumbService breadcrumbService;

@@ -27,7 +27,6 @@ public class CustomerDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
 
-
         return new CustomerDetails(customer.get());
     }
 }

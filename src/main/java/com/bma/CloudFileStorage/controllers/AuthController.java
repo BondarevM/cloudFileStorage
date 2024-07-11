@@ -1,4 +1,5 @@
 package com.bma.CloudFileStorage.controllers;
+
 import com.bma.CloudFileStorage.models.dto.CustomerDto;
 import com.bma.CloudFileStorage.repositories.CustomerRepository;
 import com.bma.CloudFileStorage.services.RegistrationService;
@@ -24,7 +25,7 @@ public class AuthController extends AbstractController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        if(model.getAttribute("isAuthenticated").equals(true)){
+        if (model.getAttribute("isAuthenticated").equals(true)) {
             return "redirect:/";
         }
         return "/login";
@@ -33,8 +34,7 @@ public class AuthController extends AbstractController {
     @GetMapping("/registration")
     public String registration(@ModelAttribute("customerDto") CustomerDto customerDto,
                                Model model) {
-
-        if(model.getAttribute("isAuthenticated").equals(true)){
+        if (model.getAttribute("isAuthenticated").equals(true)) {
             return "redirect:/";
         }
         return "/registration";
@@ -44,8 +44,7 @@ public class AuthController extends AbstractController {
     public String performRegistration(@ModelAttribute("customerDto") @Valid CustomerDto customerDto,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
-
-            registrationService.validateCustomer(customerDto);
+        registrationService.validateCustomer(customerDto);
 
         if (bindingResult.hasErrors()) {
             return "/registration";
@@ -55,8 +54,6 @@ public class AuthController extends AbstractController {
 
         redirectAttributes.addFlashAttribute("successMessage", "Registration completed successfully, please login");
 
-
         return "redirect:/login";
     }
-
 }

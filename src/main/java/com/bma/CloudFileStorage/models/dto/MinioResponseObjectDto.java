@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MinioResponseObjectDto {
-
     private String owner;
     private String path;
     private String name;

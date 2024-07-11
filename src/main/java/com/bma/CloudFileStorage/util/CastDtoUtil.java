@@ -8,15 +8,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CastDtoUtil {
 
-    public RenameObjectRequestDto castToRenameFileDto(ObjectRequestDto dto){
-        if (dto.getName().contains("/")){
+    public RenameObjectRequestDto castToRenameFileDto(ObjectRequestDto dto) {
+        if (dto.getName().contains("/")) {
             throw new IllegalFileNameException("File name must not contain '/'");
         }
 
         RenameObjectRequestDto result = new RenameObjectRequestDto();
         result.setOwner(dto.getOwner());
         result.setSourcePath(dto.getPath());
-
 
         String newPath = dto.getName();
 

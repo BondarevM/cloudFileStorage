@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomerDto {
-
     private Integer id;
 
     @NotEmpty(message = "Login should not be empty")

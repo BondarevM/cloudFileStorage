@@ -17,21 +17,20 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 @SpringBootTest
-
 class RegistrationServiceTest {
 
     @Autowired
-    private  RegistrationService registrationService;
+    private RegistrationService registrationService;
     @Autowired
     private CustomerRepository customerRepository;
 
     @Test
-    public void callingRegistrationMethodCreatesUserInDatabase(){
+    public void callingRegistrationMethodCreatesUserInDatabase() {
         String login = "login";
         String password = "password";
-
 
         CustomerDto customerDto = new CustomerDto();
         customerDto.setLogin(login);
@@ -46,7 +45,7 @@ class RegistrationServiceTest {
     }
 
     @Test
-    public void savingUserWithNonUniqueLoginThrowsException(){
+    public void savingUserWithNonUniqueLoginThrowsException() {
         String login = "login2";
         String password = "password";
 
@@ -64,7 +63,7 @@ class RegistrationServiceTest {
         customerDto2.setLogin(login2);
         customerDto2.setPassword(password2);
         customerDto2.setConfirmedPassword(password2);
-        Assertions.assertThrows(UserAlreadyExistsException.class,() -> registrationService.validateCustomer(customerDto2));
+        Assertions.assertThrows(UserAlreadyExistsException.class, () -> registrationService.validateCustomer(customerDto2));
     }
 
 

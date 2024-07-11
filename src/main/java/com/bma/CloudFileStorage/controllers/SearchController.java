@@ -1,15 +1,11 @@
 package com.bma.CloudFileStorage.controllers;
 
-import com.bma.CloudFileStorage.models.dto.CreateEmptyFolderDto;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
-import com.bma.CloudFileStorage.models.dto.SearchRequestDto;
 import com.bma.CloudFileStorage.services.SearchService;
-import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

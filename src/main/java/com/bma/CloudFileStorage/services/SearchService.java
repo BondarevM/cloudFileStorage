@@ -1,5 +1,6 @@
 package com.bma.CloudFileStorage.services;
 
+import com.bma.CloudFileStorage.exceptions.FileStorageException;
 import com.bma.CloudFileStorage.models.dto.MinioResponseObjectDto;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
@@ -22,9 +23,6 @@ public class SearchService {
     }
 
     public List<MinioResponseObjectDto> searchObjects(String owner, String query) {
-        List<String> jopa = new ArrayList<>();
-
-
 
         Set<String> resultPaths = new HashSet<>();
 
@@ -36,12 +34,10 @@ public class SearchService {
 
         for(Result<Item> result : results){
             try {
-                jopa.add(result.get().objectName());
                 String path = result.get().objectName();
                 String pathWithoutOwner = path.substring(path.indexOf("/") + 1);
                 String[] parts = pathWithoutOwner.split("/");
 
-                System.out.println();
                 for (int i = 0; i < parts.length; i++) {
                     if (parts[i].contains(query)){
                         StringBuilder resultPath = new StringBuilder();
@@ -49,25 +45,22 @@ public class SearchService {
                             resultPath.append(parts[j]).append("/");
                         }
                         resultPaths.add(resultPath.toString());
-                        System.out.println();
                     }
                 }
             }catch (Exception e){
-                //TODO exception handle
+                throw new FileStorageException("Something wrong with file storage");
             }
         }
         List<MinioResponseObjectDto> searchResult = new ArrayList<>();
 
         for (String resultPath: resultPaths){
             String objectName = resultPath.substring(0, resultPath.length() -1 );
-            System.out.println();
+
             if (objectName.contains("/")){
                 int lastSlashIndex = objectName.lastIndexOf("/");
                 objectName = objectName.substring(lastSlashIndex + 1);
-                System.out.println();
             }
                 if (resultPath.contains(".")){
-                    //      DownloadedFolder/FileInFolder2.pptx/
                     resultPath = resultPath.substring(0, resultPath.length() - 1);
                     if (resultPath.contains("/")){
                         int lastSlashIndex = resultPath.lastIndexOf("/");
@@ -75,23 +68,12 @@ public class SearchService {
                     }else {
                         resultPath="";
                     }
-
                     searchResult.add(new MinioResponseObjectDto(owner,resultPath, objectName, true));
                 } else {
                     searchResult.add(new MinioResponseObjectDto(owner,resultPath, objectName, false));
                 }
-
-
-            System.out.println();
         }
 
-        System.out.println();
         return searchResult;
-    }
-
-    private String truncatePath(String path, String query){
-
-
-        return "";
     }
 }

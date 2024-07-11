@@ -12,7 +12,7 @@ public class BreadcrumbService {
     public List<Breadcrumb> generateBreadcrumbs(HttpServletRequest request) {
         List<Breadcrumb> breadcrumbs = new ArrayList<>();
         breadcrumbs.add(new Breadcrumb("Home", ""));
-        if (request.getParameter("path") == null){
+        if (request.getParameter("path") == null) {
             return breadcrumbs;
         }
 

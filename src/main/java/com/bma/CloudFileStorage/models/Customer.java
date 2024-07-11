@@ -28,6 +28,4 @@ public class Customer implements Serializable {
 
     @Column(name = "password")
     private String password;
-
-
 }
